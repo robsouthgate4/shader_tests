@@ -19,18 +19,24 @@ float DrawPoint(vec3 ro, vec3 rd, vec3 p) {
 void main( )
 {
     
-    float time=u_time*2.0;
+    float time=u_time*1.0;
 
 	vec2 uv = gl_FragCoord.xy / u_resolution.xy;
 	uv -= .5;
 	uv.x *= u_resolution.x / u_resolution.y;
 
-    vec3 ro = vec3(0.0, 0.0, -3.0);
-    vec3 rd = vec3(uv.x, uv.y, -2.) - ro;
+    vec3 ro = vec3(3. * sin(time), 0.0, -10.*cos(time));
 
-    // vec3 p = vec3(sin(time), 0., 4. + cos(time));
-    // vec3 p2 = vec3(-sin(time / 2.0), 0., 3. + -cos(time));
-    // vec3 p3 = vec3(-sin(time), 0., 1. + -cos(time));
+    vec3 lookAt = vec3(.5);
+
+    float zoom = 1.;
+    vec3 f = normalize(lookAt - ro);
+    vec3 r = cross(vec3(0.0, 1.0, 0.0),f);
+    vec3 u = cross(f, r);
+
+    vec3 c = ro + f * zoom;
+    vec3 i = c + uv.x * r + uv.y * u;
+    vec3 rd = i - ro;
 
     float d = 0.;
 
@@ -42,7 +48,7 @@ void main( )
     d += DrawPoint(ro, rd, vec3(1., 0., 1.));
     d += DrawPoint(ro, rd, vec3(1., 1., 0.));
     d += DrawPoint(ro, rd, vec3(1., 1., 1.));
-    
+
 
 	gl_FragColor = vec4(d);
 }
